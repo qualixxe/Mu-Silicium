@@ -35,8 +35,8 @@ APRIORI DXE {
   INF MdeModulePkg/Universal/Disk/UnicodeCollation/EnglishDxe/EnglishDxe.inf
   INF courbetPkg/Drivers/StallDxe/StallDxe04.inf
 
-  INF Binaries/sweet_k6a/QcomPkg/Drivers/SdccDxe/SdccDxe.inf
-  INF Binaries/sweet_k6a/QcomPkg/Drivers/UFSDxe/UFSDxe.inf
+  INF Binaries/surya/QcomPkg/Drivers/SdccDxe/SdccDxe.inf
+  INF Binaries/surya/QcomPkg/Drivers/UFSDxe/UFSDxe.inf
 
   INF FatPkg/EnhancedFatDxe/Fat.inf
   INF courbetPkg/Drivers/StallDxe/StallDxe05.inf
