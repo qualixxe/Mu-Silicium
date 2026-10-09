@@ -1,0 +1,22 @@
+## @file
+#  Diagnostic stall driver #05 (courbet crash localization).
+#  SPDX-License-Identifier: BSD-2-Clause-Patent
+##
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = StallDxe05
+  FILE_GUID                      = 3F2E1D0C-5A4B-4C3D-8E2F-101010101005
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = StallDxeEntry
+
+[Sources.common]
+  StallDxe.c
+
+[LibraryClasses]
+  UefiDriverEntryPoint
+  UefiBootServicesTableLib
+  SerialPortLib
+
+[Depex]
+  TRUE

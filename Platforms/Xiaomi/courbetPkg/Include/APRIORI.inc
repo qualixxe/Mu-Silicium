@@ -11,6 +11,7 @@ APRIORI DXE {
   INF ArmPkg/Drivers/ArmGicDxe/ArmGicDxe.inf
   INF EmbeddedPkg/MetronomeDxe/MetronomeDxe.inf
   INF ArmPkg/Drivers/TimerDxe/TimerDxe.inf
+  INF courbetPkg/Drivers/StallDxe/StallDxe01.inf
 
   INF Binaries/sweet_k6a/QcomPkg/Drivers/SmemDxe/SmemDxe.inf
   INF Binaries/sweet_k6a/QcomPkg/Drivers/DALSYSDxe/DALSYSDxe.inf
@@ -21,20 +22,24 @@ APRIORI DXE {
   INF Binaries/sweet_k6a/QcomPkg/Drivers/ULogDxe/ULogDxe.inf
   INF Binaries/sweet_k6a/QcomPkg/Drivers/CmdDbDxe/CmdDbDxe.inf
   INF Binaries/sweet_k6a/QcomPkg/Drivers/NpaDxe/NpaDxe.inf
+  INF courbetPkg/Drivers/StallDxe/StallDxe02.inf
   INF Binaries/sweet_k6a/QcomPkg/Drivers/RpmhDxe/RpmhDxe.inf
   INF Binaries/sweet_k6a/QcomPkg/Drivers/PdcDxe/PdcDxe.inf
   INF Binaries/sweet_k6a/QcomPkg/Drivers/ClockDxe/ClockDxe.inf
   INF Binaries/sweet_k6a/QcomPkg/Drivers/ShmBridgeDxe/ShmBridgeDxeLA.inf
   INF Binaries/sweet_k6a/QcomPkg/Drivers/TzDxe/ScmDxeLA.inf
+  INF courbetPkg/Drivers/StallDxe/StallDxe03.inf
 
   INF MdeModulePkg/Universal/Disk/DiskIoDxe/DiskIoDxe.inf
   INF MdeModulePkg/Universal/Disk/PartitionDxe/PartitionDxe.inf
   INF MdeModulePkg/Universal/Disk/UnicodeCollation/EnglishDxe/EnglishDxe.inf
+  INF courbetPkg/Drivers/StallDxe/StallDxe04.inf
 
   INF Binaries/sweet_k6a/QcomPkg/Drivers/SdccDxe/SdccDxe.inf
   INF Binaries/sweet_k6a/QcomPkg/Drivers/UFSDxe/UFSDxe.inf
 
   INF FatPkg/EnhancedFatDxe/Fat.inf
+  INF courbetPkg/Drivers/StallDxe/StallDxe05.inf
 
   INF Binaries/sweet_k6a/QcomPkg/Drivers/TzDxe/TzDxeLA.inf
 
@@ -42,6 +47,7 @@ APRIORI DXE {
 
   INF Binaries/sweet_k6a/QcomPkg/Drivers/TLMMDxe/TLMMDxe.inf
   INF Binaries/sweet_k6a/QcomPkg/Drivers/SPMIDxe/SPMIDxe.inf
+  INF courbetPkg/Drivers/StallDxe/StallDxe06.inf
 
   INF MdeModulePkg/Universal/ResetSystemRuntimeDxe/ResetSystemRuntimeDxe.inf
 
@@ -51,11 +57,13 @@ APRIORI DXE {
   INF MdeModulePkg/Universal/SecurityStubDxe/SecurityStubDxe.inf
   INF EmbeddedPkg/EmbeddedMonotonicCounter/EmbeddedMonotonicCounter.inf
   INF EmbeddedPkg/RealTimeClockRuntimeDxe/RealTimeClockRuntimeDxe.inf
+  INF courbetPkg/Drivers/StallDxe/StallDxe07.inf
   INF MdeModulePkg/Universal/PrintDxe/PrintDxe.inf
   INF MdeModulePkg/Universal/DevicePathDxe/DevicePathDxe.inf
   INF MdeModulePkg/Universal/CapsuleRuntimeDxe/CapsuleRuntimeDxe.inf
   INF MdeModulePkg/Universal/HiiDatabaseDxe/HiiDatabaseDxe.inf
   INF MdeModulePkg/Universal/BdsDxe/BdsDxe.inf
+  INF courbetPkg/Drivers/StallDxe/StallDxe08.inf
 
   INF Binaries/sweet_k6a/QcomPkg/Drivers/I2CDxe/I2CDxe.inf
   INF Binaries/sweet_k6a/QcomPkg/Drivers/AW8624Dxe/AW8624Dxe.inf
@@ -63,6 +71,7 @@ APRIORI DXE {
   INF Binaries/sweet_k6a/QcomPkg/Drivers/UsbPwrCtrlDxe/UsbPwrCtrlDxe.inf
   INF Binaries/sweet_k6a/QcomPkg/Drivers/QcomChargerDxe/QcomChargerDxeLA.inf
   INF Binaries/sweet_k6a/QcomPkg/Drivers/ChargerExDxe/ChargerExDxe.inf
+  INF courbetPkg/Drivers/StallDxe/StallDxe09.inf
   INF Binaries/sweet_k6a/QcomPkg/Drivers/UsbfnDwc3Dxe/UsbfnDwc3Dxe.inf
 
   INF MdeModulePkg/Bus/Usb/UsbBusDxe/UsbBusDxe.inf
@@ -72,6 +81,7 @@ APRIORI DXE {
   INF Binaries/sweet_k6a/QcomPkg/Drivers/UsbMsdDxe/UsbMsdDxe.inf
   INF Binaries/sweet_k6a/QcomPkg/Drivers/UsbDeviceDxe/UsbDeviceDxe.inf
   INF Binaries/sweet_k6a/QcomPkg/Drivers/UsbConfigDxe/UsbConfigDxe.inf
+  INF courbetPkg/Drivers/StallDxe/StallDxe10.inf
   INF Binaries/sweet_k6a/QcomPkg/Drivers/ButtonsDxe/ButtonsDxe.inf
   INF Binaries/sweet_k6a/QcomPkg/Drivers/TsensDxe/TsensDxe.inf
 

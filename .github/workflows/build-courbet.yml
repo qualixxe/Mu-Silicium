@@ -8,6 +8,16 @@ on:
       - 'Resources/DTBs/courbet.dtb'
       - '.github/workflows/build-courbet.yml'
   workflow_dispatch:
+    inputs:
+      mode:
+        type: choice
+        description: 'Build mode: release / debug / both (push builds default to release)'
+        required: false
+        default: release
+        options:
+          - release
+          - debug
+          - both
 env:
   CI_BUILD: true
 jobs:
@@ -16,13 +26,18 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - name: Build courbet UEFI (DEBUG + RELEASE)
+      - name: Build courbet UEFI
         run: |
+          MODE="${{ github.event.inputs.mode || 'release' }}"
           bash ./setup_env.sh -p apt
-          python3 build_uefi.py -d courbet -r DEBUG
-          mv Mu-courbet.img Mu-courbet-debug.img
-          python3 build_uefi.py -d courbet -r RELEASE
-          mv Mu-courbet.img Mu-courbet-release.img
+          if [ "$MODE" = "debug" ] || [ "$MODE" = "both" ]; then
+            python3 build_uefi.py -d courbet -r DEBUG
+            mv Mu-courbet.img Mu-courbet-debug.img
+          fi
+          if [ "$MODE" = "release" ] || [ "$MODE" = "both" ]; then
+            python3 build_uefi.py -d courbet -r RELEASE
+            mv Mu-courbet.img Mu-courbet-release.img
+          fi
 
       - name: Upload UEFI images
         uses: actions/upload-artifact@v7
