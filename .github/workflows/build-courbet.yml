@@ -1,0 +1,32 @@
+name: Build UEFI for Xiaomi Mi 11 Lite 4G (courbet)
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - 'Platforms/Xiaomi/courbetPkg/**'
+      - 'Resources/Configs/courbet.toml'
+      - 'Resources/DTBs/courbet.dtb'
+      - '.github/workflows/build-courbet.yml'
+  workflow_dispatch:
+env:
+  CI_BUILD: true
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Build courbet UEFI (DEBUG + RELEASE)
+        run: |
+          bash ./setup_env.sh -p apt
+          python3 build_uefi.py -d courbet -r DEBUG
+          mv Mu-courbet.img Mu-courbet-debug.img
+          python3 build_uefi.py -d courbet -r RELEASE
+          mv Mu-courbet.img Mu-courbet-release.img
+
+      - name: Upload UEFI images
+        uses: actions/upload-artifact@v7
+        with:
+          name: mu-courbet
+          path: ./Mu-courbet-*.img
+          compression-level: 9
