@@ -83,3 +83,17 @@
   # ACPI Tables
   #
   #courbet/AcpiTables.inf
+
+  #
+  # Diagnostic stall drivers (crash localization)
+  #
+  courbetPkg/Drivers/StallDxe/StallDxe01.inf
+  courbetPkg/Drivers/StallDxe/StallDxe02.inf
+  courbetPkg/Drivers/StallDxe/StallDxe03.inf
+  courbetPkg/Drivers/StallDxe/StallDxe04.inf
+  courbetPkg/Drivers/StallDxe/StallDxe05.inf
+  courbetPkg/Drivers/StallDxe/StallDxe06.inf
+  courbetPkg/Drivers/StallDxe/StallDxe07.inf
+  courbetPkg/Drivers/StallDxe/StallDxe08.inf
+  courbetPkg/Drivers/StallDxe/StallDxe09.inf
+  courbetPkg/Drivers/StallDxe/StallDxe10.inf
