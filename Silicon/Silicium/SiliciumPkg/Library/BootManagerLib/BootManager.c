@@ -18,6 +18,8 @@
 #include <Library/BootGraphicsLib.h>
 #include <Library/BootGraphics.h>
 #include <Library/PrintLib.h>
+#include <Library/BaseLib.h>
+#include <Library/SerialPortLib.h>
 
 #include <Configuration/BootDevices.h>
 
@@ -33,6 +35,20 @@ STATIC UINTN YPos = 0;
 // BDS Combo Message
 //
 STATIC CONST CHAR8 *ComboMessage = "[Volume Up] Boot Manager";
+
+//
+// Write a status line straight to the on-screen framebuffer console.
+// This uses SerialPortWrite() (not DEBUG()), so it also works in RELEASE
+// builds where the DEBUG() macro is compiled out.
+//
+STATIC
+VOID
+WriteScreenStatus (
+  IN CONST CHAR8 *Message
+  )
+{
+  SerialPortWrite ((UINT8 *)Message, AsciiStrLen (Message));
+}
 
 VOID
 EFIAPI
@@ -124,6 +140,9 @@ PlatformBootManagerAfterConsole ()
 
   // Execute Secondary After Console
   DeviceBootManagerAfterConsole ();
+
+  // Print an on-screen status line (works in DEBUG and RELEASE).
+  WriteScreenStatus ("\r\nSilicium UEFI (courbet / SM7150) - display is alive\r\n");
 }
 
 VOID
@@ -212,6 +231,9 @@ PlatformBootManagerUnableToBoot ()
     DEBUG ((EFI_D_ERROR, "%a: Failed to Display No Boot OS Logo! Status = %r\n", __FUNCTION__, Status));
     Print (L"No Operating System Found! Please make sure that an OS is Installed.\n");
   }
+
+  // Print a clear status line (works in DEBUG and RELEASE).
+  WriteScreenStatus ("\r\nNo Operating System found. UEFI booted successfully.\r\nHold Power to turn the device off.\r\n");
 
   // Wait 10s
   gBS->Stall (10000000);

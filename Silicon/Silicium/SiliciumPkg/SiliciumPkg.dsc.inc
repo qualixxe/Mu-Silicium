@@ -158,11 +158,14 @@
   #
   # Debug Libraries
   #
-!if $(TARGET) == DEBUG
+  # Always route SerialPortLib to the on-screen framebuffer, so that both
+  # DEBUG and RELEASE builds can output text via SerialPortWrite(). In release
+  # the DEBUG() macro is compiled out, but direct SerialPortWrite() calls still
+  # reach the display.
   SerialPortLib|SiliciumPkg/Library/FrameBufferSerialPortLib/FrameBufferSerialPortLib.inf
+!if $(TARGET) == DEBUG
   DebugLib|MdePkg/Library/BaseDebugLibSerialPort/BaseDebugLibSerialPort.inf
 !else
-  SerialPortLib|MdePkg/Library/BaseSerialPortLibNull/BaseSerialPortLibNull.inf
   DebugLib|MdePkg/Library/BaseDebugLibNull/BaseDebugLibNull.inf
 !endif
   DebugAgentLib|MdeModulePkg/Library/DebugAgentLibNull/DebugAgentLibNull.inf

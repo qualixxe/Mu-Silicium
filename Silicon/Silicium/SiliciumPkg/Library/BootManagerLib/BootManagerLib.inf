@@ -37,6 +37,8 @@
   BootGraphicsLib
   DevicePathLib
   PrintLib
+  SerialPortLib
+  BaseLib
 
 [Pcd]
   gEfiMdePkgTokenSpaceGuid.PcdPlatformBootTimeOut
