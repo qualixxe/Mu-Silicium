@@ -216,10 +216,10 @@ PlatformBootManagerUnableToBoot ()
   // Wait 10s
   gBS->Stall (10000000);
 
-  // Shutdown
-  gRT->ResetSystem (EfiResetShutdown, EFI_SUCCESS, 0, NULL);
-
-  // Do Cpu Dead Loop
+  //
+  // Keep the display alive so the running UEFI can be inspected on-screen
+  // instead of powering the device off when no bootable OS is present.
+  //
   CpuDeadLoop ();
 }
 
