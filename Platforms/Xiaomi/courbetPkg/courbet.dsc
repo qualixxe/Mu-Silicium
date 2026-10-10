@@ -67,11 +67,22 @@
   #
   gQcomPkgTokenSpaceGuid.PcdPlatformType|"WP"
 
+  #
+  # Debug: keep ERROR/INIT/LOAD output visible on the framebuffer even in RELEASE
+  # (lets us capture the exception dump (ESR/PC) when the boot crashes)
+  #
+  gEfiMdePkgTokenSpaceGuid.PcdDebugPrintErrorLevel|0x80000050
+
 [LibraryClasses]
   #
   # Memory Libraries
   #
   MemoryMapLib|courbetPkg/Library/MemoryMapLib/MemoryMapLib.inf
+
+  #
+  # Debug: route DebugLib to serial (framebuffer) in RELEASE too
+  #
+  DebugLib|MdePkg/Library/BaseDebugLibSerialPort/BaseDebugLibSerialPort.inf
 
   #
   # QCOM Libraries
