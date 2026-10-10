@@ -19,7 +19,9 @@
 #include <Library/UefiBootServicesTableLib.h>
 #include <Library/SerialPortLib.h>
 
-STATIC CONST CHAR8  mStallMarker[] = "STALL\n";
+#ifndef STALL__IDX
+#define STALL__IDX  0
+#endif
 
 /**
   Entry point of the diagnostic stall driver.
@@ -36,7 +38,11 @@ StallDxeEntry (
   IN EFI_SYSTEM_TABLE  *SystemTable
   )
 {
-  (VOID) SerialPortWrite ((UINT8 *)mStallMarker, sizeof (mStallMarker) - 1);
+  CHAR8  Marker[] = "STALL 00\n";
+
+  Marker[6] = (CHAR8)('0' + (STALL__IDX / 10) % 10);
+  Marker[7] = (CHAR8)('0' + (STALL__IDX % 10));
+  (VOID) SerialPortWrite ((UINT8 *)Marker, sizeof (Marker) - 1);
 
   // 3 seconds.  gBS->Stall() is available: MetronomeDxe + TimerDxe are
   // loaded earlier in the APRIORI sequence than every staller instance.

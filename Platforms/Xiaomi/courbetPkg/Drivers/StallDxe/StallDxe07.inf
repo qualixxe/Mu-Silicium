@@ -23,3 +23,6 @@
 
 [Depex]
   TRUE
+
+[BuildOptions]
+  GCC:*_*_*_CC_FLAGS = -DSTALL__IDX=7

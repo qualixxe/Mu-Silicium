@@ -97,3 +97,6 @@
   courbetPkg/Drivers/StallDxe/StallDxe08.inf
   courbetPkg/Drivers/StallDxe/StallDxe09.inf
   courbetPkg/Drivers/StallDxe/StallDxe10.inf
+  courbetPkg/Drivers/MarkDxe/MarkDxe01.inf
+  courbetPkg/Drivers/MarkDxe/MarkDxe02.inf
+  courbetPkg/Drivers/MarkDxe/MarkDxe03.inf
