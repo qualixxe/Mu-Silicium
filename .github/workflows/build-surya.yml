@@ -1,0 +1,47 @@
+name: Build UEFI for POCO X3 NFC (surya) — control test
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - 'Platforms/Xiaomi/suryaPkg/**'
+      - 'Resources/Configs/surya.toml'
+      - 'Resources/DTBs/surya.dtb'
+      - '.github/workflows/build-surya.yml'
+  workflow_dispatch:
+    inputs:
+      mode:
+        type: choice
+        description: 'Build mode: release / debug / both (push builds default to release)'
+        required: false
+        default: release
+        options:
+          - release
+          - debug
+          - both
+env:
+  CI_BUILD: true
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Build surya UEFI
+        run: |
+          MODE="${{ github.event.inputs.mode || 'release' }}"
+          bash ./setup_env.sh -p apt
+          if [ "$MODE" = "debug" ] || [ "$MODE" = "both" ]; then
+            python3 build_uefi.py -d surya -r DEBUG
+            mv Mu-surya*.img Mu-surya-debug.img
+          fi
+          if [ "$MODE" = "release" ] || [ "$MODE" = "both" ]; then
+            python3 build_uefi.py -d surya -r RELEASE
+            mv Mu-surya*.img Mu-surya-release.img
+          fi
+
+      - name: Upload UEFI images
+        uses: actions/upload-artifact@v7
+        with:
+          name: mu-surya
+          path: ./Mu-surya-*.img
+          compression-level: 9
