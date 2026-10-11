@@ -442,17 +442,26 @@ FaultDxeEntry (
 {
   EFI_CPU_ARCH_PROTOCOL  *CpuArch;
   EFI_STATUS             Status;
+  EFI_STATUS             SyncStatus;
+  EFI_STATUS             SerrStatus;
 
-  PrintStr ("FAULTDXE READY\n");
+  PrintStr ("== FaultDxe armed ==\n");
 
   Status = gBS->LocateProtocol (&gEfiCpuArchProtocolGuid, NULL, (VOID **)&CpuArch);
   if (EFI_ERROR (Status) || (CpuArch == NULL)) {
-    PrintStr ("FAULTDXE: no CpuArch\n");
+    PrintStr ("FaultDxe: no CpuArch\n");
     return EFI_SUCCESS;
   }
 
-  CpuArch->RegisterInterruptHandler (CpuArch, EXCEPT_AARCH64_SYNCHRONOUS_EXCEPTIONS, FaultHandler);
-  CpuArch->RegisterInterruptHandler (CpuArch, EXCEPT_AARCH64_SERROR, FaultHandler);
+  SyncStatus = CpuArch->RegisterInterruptHandler (CpuArch, EXCEPT_AARCH64_SYNCHRONOUS_EXCEPTIONS, FaultHandler);
+  SerrStatus = CpuArch->RegisterInterruptHandler (CpuArch, EXCEPT_AARCH64_SERROR, FaultHandler);
+
+  /* sync/serr status: 00 = registered, 0e = already taken by someone else. */
+  PrintStr ("FaultDxe: sync=");
+  PrintHex ((UINT64)SyncStatus, 2);
+  PrintStr (" serr=");
+  PrintHex ((UINT64)SerrStatus, 2);
+  PrintStr ("\n");
 
   return EFI_SUCCESS;
 }
