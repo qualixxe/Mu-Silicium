@@ -108,6 +108,11 @@
   courbetPkg/Drivers/StallDxe/StallDxe08.inf
   courbetPkg/Drivers/StallDxe/StallDxe09.inf
   courbetPkg/Drivers/StallDxe/StallDxe10.inf
+  #
+  # Diagnostic fault reporter (compact exception dump)
+  #
+  courbetPkg/Drivers/FaultDxe/FaultDxe.inf
+
   courbetPkg/Drivers/MarkDxe/MarkDxe01.inf
   courbetPkg/Drivers/MarkDxe/MarkDxe02.inf
   courbetPkg/Drivers/MarkDxe/MarkDxe03.inf

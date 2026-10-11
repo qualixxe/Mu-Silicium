@@ -10,6 +10,7 @@ APRIORI DXE {
   INF MdeModulePkg/Core/RuntimeDxe/RuntimeDxe.inf
   INF courbetPkg/Drivers/MarkDxe/MarkDxe02.inf
   INF RuleOverride = CPUDXE ArmPkg/Drivers/CpuDxe/CpuDxe.inf
+  INF courbetPkg/Drivers/FaultDxe/FaultDxe.inf
   INF ArmPkg/Drivers/ArmGicDxe/ArmGicDxe.inf
   INF EmbeddedPkg/MetronomeDxe/MetronomeDxe.inf
   INF ArmPkg/Drivers/TimerDxe/TimerDxe.inf

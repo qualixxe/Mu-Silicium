@@ -1,0 +1,29 @@
+## @file
+#  FaultDxe - compact on-screen synchronous exception reporter (courbet).
+#  SPDX-License-Identifier: BSD-2-Clause-Patent
+##
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = FaultDxe
+  FILE_GUID                      = 3F2E1D0C-5A4B-4C3D-8E2F-303030303001
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = FaultDxeEntry
+
+[Sources.common]
+  FaultDxe.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+
+[LibraryClasses]
+  UefiDriverEntryPoint
+  UefiBootServicesTableLib
+  SerialPortLib
+  PrintLib
+  BaseLib
+  BaseMemoryLib
+  DevicePathLib
+
+[Depex]
+  gEfiCpuArchProtocolGuid
