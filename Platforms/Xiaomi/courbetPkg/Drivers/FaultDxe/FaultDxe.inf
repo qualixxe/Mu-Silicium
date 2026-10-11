@@ -16,6 +16,12 @@
 [Packages]
   MdePkg/MdePkg.dec
 
+[Protocols]
+  gEfiCpuArchProtocolGuid
+
+[Guids]
+  gEfiDebugImageInfoTableGuid
+
 [LibraryClasses]
   UefiDriverEntryPoint
   UefiBootServicesTableLib
