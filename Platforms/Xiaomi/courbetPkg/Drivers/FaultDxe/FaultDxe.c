@@ -3,10 +3,11 @@
 
   Registers AArch64 synchronous exception handlers via the CPU arch
   protocol immediately after CpuDxe in the DXE APRIORI sequence.  On the
-  first exception it prints a short block (exception type, PC, FAR, the
-  faulting image name and a few registers) to the framebuffer serial and
-  halts.  This turns an unreadable 50-line register dump (or a silent
-  watchdog reset) into a few lines that fit on the phone screen.
+  first exception it prints a short block (exception type, PC, FAR, ESR and
+  the faulting image + PDB name) to the framebuffer serial and then keeps
+  the machine alive (interrupts re-enabled, UEFI watchdog disabled) so the
+  screen stays readable.  This turns an unreadable 50-line register dump
+  (or a silent watchdog reset) into a few lines that fit on the screen.
 
   Copyright (c) 2026, qualixxe. All rights reserved.
   SPDX-License-Identifier: BSD-2-Clause-Patent
@@ -14,7 +15,6 @@
 
 #include <Uefi.h>
 #include <Library/BaseLib.h>
-#include <Library/DevicePathLib.h>
 #include <Library/SerialPortLib.h>
 #include <Library/UefiBootServicesTableLib.h>
 #include <Protocol/Cpu.h>
@@ -46,6 +46,8 @@ typedef struct {
   UINTN                TableSize;
   FAULT_DBG_IMG_ENTRY  *EfiDebugImageInfoTable;
 } FAULT_DBG_IMG_TABLE;
+
+STATIC volatile UINTN  mInFault = 0;
 
 /* Write a NUL-terminated ASCII string to the framebuffer serial. */
 STATIC
@@ -94,6 +96,16 @@ PrintField (
   PrintStr ("0x");
   PrintHex (Value, 16);
   PrintStr ("\n");
+}
+
+/* Clear the EL1 IRQ mask so timer/watchdog events keep running. */
+STATIC
+VOID
+EnableInterrupts (
+  VOID
+  )
+{
+  __asm__ __volatile__ ("msr daifclr, #2" ::: "memory");
 }
 
 /**
@@ -158,33 +170,189 @@ DescribeEsr (
   }
 }
 
+/* Bounds-checked little-endian 32-bit read from the loaded image. */
+STATIC
+BOOLEAN
+InImage (
+  IN UINT64  Base,
+  IN UINT64  Size,
+  IN UINT64  Addr,
+  IN UINTN   Len
+  )
+{
+  if (Addr < Base) {
+    return FALSE;
+  }
+
+  if (Addr + Len < Addr) {
+    return FALSE;
+  }
+
+  return ((Addr + Len) <= (Base + Size));
+}
+
 /**
-  Print the name of the loaded image whose memory range contains Address.
-  Uses the DXE debug image info table published by the DXE core.
+  Best-effort extraction of the module name from the PE/COFF CodeView debug
+  directory of the image containing "Base".  Everything is bounds-checked
+  against [Base, Base+Size).  Prints nothing if no name is found.
 **/
 STATIC
 VOID
-PrintImageName (
+PrintPdbName (
+  IN UINT64  Base,
+  IN UINT64  Size
+  )
+{
+  UINT32  PeOff;
+  UINT32  DbgRva;
+  UINT32  DbgSize;
+  UINT32  NumDirs;
+  UINT32  OptOff;
+  UINT32  Ent;
+  UINT32  EntOff;
+  UINT32  EntType;
+  UINT32  EntRaw;
+  UINT8   *P;
+
+  /* DOS header: e_magic 'MZ' at 0, e_lfanew at 0x3C. */
+  if (!InImage (Base, Size, Base + 0x3C, 4)) {
+    return;
+  }
+
+  if (*(UINT16 *)(UINTN)Base != 0x5A4D) {
+    return;
+  }
+
+  PeOff = *(UINT32 *)(UINTN)(Base + 0x3C);
+  if (PeOff == 0) {
+    return;
+  }
+
+  if (!InImage (Base, Size, Base + PeOff, 24)) {
+    return;
+  }
+
+  P = (UINT8 *)(UINTN)(Base + PeOff);
+  if ((P[0] != 'P') || (P[1] != 'E') || (P[2] != 0) || (P[3] != 0)) {
+    return;
+  }
+
+  /* COFF header is 20 bytes; optional header follows. */
+  OptOff = PeOff + 24;
+  if (!InImage (Base, Size, Base + OptOff, 4)) {
+    return;
+  }
+
+  /* Magic 0x20b = PE32+; NumDirs at optional header + 108. */
+  if (!InImage (Base, Size, Base + OptOff + 108, 4)) {
+    return;
+  }
+
+  NumDirs = *(UINT16 *)(UINTN)(Base + OptOff + 108);
+  if (NumDirs < 7) {
+    return;
+  }
+
+  /* DataDirectory[6] = IMAGE_DIRECTORY_ENTRY_DEBUG; PE32+ base is 0x70. */
+  if (!InImage (Base, Size, Base + OptOff + 0x70 + 6 * 8, 8)) {
+    return;
+  }
+
+  DbgRva  = *(UINT32 *)(UINTN)(Base + OptOff + 0x70 + 6 * 8);
+  DbgSize = *(UINT32 *)(UINTN)(Base + OptOff + 0x70 + 6 * 8 + 4);
+  if ((DbgRva == 0) || (DbgSize < 28)) {
+    return;
+  }
+
+  for (Ent = 0; Ent < (DbgSize / 28) && Ent < 16; Ent++) {
+    EntOff = DbgRva + Ent * 28;
+    if (!InImage (Base, Size, Base + EntOff, 28)) {
+      return;
+    }
+
+    EntType = *(UINT32 *)(UINTN)(Base + EntOff + 12);
+    EntRaw  = *(UINT32 *)(UINTN)(Base + EntOff + 24);
+
+    /* IMAGE_DEBUG_TYPE_CODEVIEW = 2 */
+    if ((EntType != 2) || (EntRaw == 0)) {
+      continue;
+    }
+
+    /* RSDS followed by GUID(16) + Age(4) + NUL-terminated path. */
+    if (!InImage (Base, Size, Base + EntRaw, 24)) {
+      continue;
+    }
+
+    if ((*(UINT32 *)(UINTN)(Base + EntRaw) != 0x53445352)) { /* 'RSDS' */
+      continue;
+    }
+
+    {
+      CHAR8  *Name;
+      CHAR8  *Sep;
+      CHAR8  *Cur;
+      CHAR8   Out[44];
+      UINTN   N;
+      UINTN   k;
+
+      Name = (CHAR8 *)(UINTN)(Base + EntRaw + 24);
+      /* Path string is bounded by the image; find its length. */
+      N = 0;
+      while ((N < 200) && InImage (Base, Size, (UINT64)(UINTN)(Name + N), 1) && (Name[N] != 0)) {
+        N++;
+      }
+
+      if (N == 0) {
+        return;
+      }
+
+      /* Strip directory and keep the base name. */
+      Sep = Name;
+      for (Cur = Name; Cur < (Name + N); Cur++) {
+        if ((*Cur == '\\') || (*Cur == '/') || (*Cur == ':')) {
+          Sep = Cur + 1;
+        }
+      }
+
+      k = 0;
+      while (((Sep + k) < (Name + N)) && (k < sizeof (Out) - 1) &&
+             (Sep[k] >= 0x20) && (Sep[k] < 0x7F))
+      {
+        Out[k] = Sep[k];
+        k++;
+      }
+      Out[k] = 0;
+
+      if (k != 0) {
+        PrintStr ("IMG: ");
+        PrintStr (Out);
+        PrintStr ("\n");
+      }
+    }
+    return;
+  }
+}
+
+/**
+  Print the loaded image containing Address (base + offset) and, if possible,
+  its module name via the PE debug directory.
+**/
+STATIC
+VOID
+PrintImage (
   IN UINT64  Address
   )
 {
   FAULT_DBG_IMG_TABLE        *Table;
   EFI_LOADED_IMAGE_PROTOCOL  *LoadedImage;
-  CHAR16                     *Path;
-  CHAR8                       AsciiPath[140];
-  CHAR8                      *Sep;
   UINTN                       Idx;
-  UINTN                       j;
-  UINTN                       k;
 
   Table = NULL;
   if (EFI_ERROR (gBS->LocateProtocol (&gEfiDebugImageInfoTableGuid, NULL, (VOID **)&Table))) {
-    PrintStr ("IMG: <no table>\n");
     return;
   }
 
   if ((Table == NULL) || (Table->EfiDebugImageInfoTable == NULL)) {
-    PrintStr ("IMG: <null>\n");
     return;
   }
 
@@ -204,37 +372,15 @@ PrintImageName (
 
     if ((Address >= (UINT64)LoadedImage->ImageBase) &&
         (Address <  (UINT64)LoadedImage->ImageBase + LoadedImage->ImageSize)) {
-      Path = ConvertDevicePathToText (LoadedImage->FilePath, FALSE, FALSE);
-      if (Path == NULL) {
-        PrintStr ("IMG: <no path>\n");
-        return;
-      }
-
-      k = 0;
-      for (j = 0; (Path[j] != 0) && (k < sizeof (AsciiPath) - 1); j++) {
-        if ((Path[j] == L'\\') || (Path[j] == L'/')) {
-          AsciiPath[k++] = '/';
-        } else if ((Path[j] > 0x20) && (Path[j] < 0x7F)) {
-          AsciiPath[k++] = (CHAR8)Path[j];
-        }
-      }
-      AsciiPath[k] = 0;
-
-      Sep = AsciiPath;
-      for (j = 0; AsciiPath[j] != 0; j++) {
-        if (AsciiPath[j] == '/') {
-          Sep = &AsciiPath[j + 1];
-        }
-      }
-
-      PrintStr ("IMG: ");
-      PrintStr (Sep);
+      PrintStr ("IMG: base=0x");
+      PrintHex ((UINT64)LoadedImage->ImageBase, 16);
+      PrintStr (" +0x");
+      PrintHex (Address - (UINT64)LoadedImage->ImageBase, 8);
       PrintStr ("\n");
+      PrintPdbName ((UINT64)LoadedImage->ImageBase, LoadedImage->ImageSize);
       return;
     }
   }
-
-  PrintStr ("IMG: <unknown>\n");
 }
 
 STATIC
@@ -247,6 +393,15 @@ FaultHandler (
 {
   EFI_SYSTEM_CONTEXT_AARCH64  *Ctx;
 
+  if (mInFault != 0) {
+    /* Recursive fault while reporting: stay quiet and hang. */
+    for ( ; ; ) {
+      CpuDeadLoop ();
+    }
+  }
+
+  mInFault = 1;
+
   Ctx = SystemContext.SystemContextAArch64;
 
   PrintStr ("\n===== FAULT =====\n");
@@ -256,15 +411,17 @@ FaultHandler (
 
   PrintField ("PC  =", Ctx->ELR);
   PrintField ("FAR =", Ctx->FAR);
-  PrintImageName (Ctx->ELR);
+  PrintField ("ESR =", Ctx->ESR);
   PrintField ("X0  =", Ctx->X0);
   PrintField ("LR  =", Ctx->LR);
   PrintField ("SP  =", Ctx->SP);
-  PrintField ("ESR =", Ctx->ESR);
+  PrintImage (Ctx->ELR);
 
-  /* Freeze the screen so the cause stays readable (watchdog may reset later). */
+  /* Try to stop the platform from resetting so the screen persists. */
+  gBS->SetWatchdogTimer (0, 0, 0, NULL);
+
   for ( ; ; ) {
-    CpuDeadLoop ();
+    EnableInterrupts ();
   }
 }
 

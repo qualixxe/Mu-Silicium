@@ -27,7 +27,6 @@
   UefiBootServicesTableLib
   SerialPortLib
   BaseLib
-  DevicePathLib
 
 [Depex]
   gEfiCpuArchProtocolGuid
