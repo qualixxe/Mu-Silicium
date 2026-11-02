@@ -67,22 +67,11 @@
   #
   gQcomPkgTokenSpaceGuid.PcdPlatformType|"WP"
 
-  #
-  # Debug: keep ERROR/INIT/LOAD output visible on the framebuffer even in RELEASE
-  # (lets us capture the exception dump (ESR/PC) when the boot crashes)
-  #
-  gEfiMdePkgTokenSpaceGuid.PcdDebugPrintErrorLevel|0x80000050
-
 [LibraryClasses]
   #
   # Memory Libraries
   #
   MemoryMapLib|courbetPkg/Library/MemoryMapLib/MemoryMapLib.inf
-
-  #
-  # Debug: route DebugLib to serial (framebuffer) in RELEASE too
-  #
-  DebugLib|MdePkg/Library/BaseDebugLibSerialPort/BaseDebugLibSerialPort.inf
 
   #
   # QCOM Libraries
@@ -94,25 +83,3 @@
   # ACPI Tables
   #
   #courbet/AcpiTables.inf
-
-  #
-  # Diagnostic stall drivers (crash localization)
-  #
-  courbetPkg/Drivers/StallDxe/StallDxe01.inf
-  courbetPkg/Drivers/StallDxe/StallDxe02.inf
-  courbetPkg/Drivers/StallDxe/StallDxe03.inf
-  courbetPkg/Drivers/StallDxe/StallDxe04.inf
-  courbetPkg/Drivers/StallDxe/StallDxe05.inf
-  courbetPkg/Drivers/StallDxe/StallDxe06.inf
-  courbetPkg/Drivers/StallDxe/StallDxe07.inf
-  courbetPkg/Drivers/StallDxe/StallDxe08.inf
-  courbetPkg/Drivers/StallDxe/StallDxe09.inf
-  courbetPkg/Drivers/StallDxe/StallDxe10.inf
-  #
-  # Diagnostic fault reporter (compact exception dump)
-  #
-  courbetPkg/Drivers/FaultDxe/FaultDxe.inf
-
-  courbetPkg/Drivers/MarkDxe/MarkDxe01.inf
-  courbetPkg/Drivers/MarkDxe/MarkDxe02.inf
-  courbetPkg/Drivers/MarkDxe/MarkDxe03.inf

@@ -1,20 +1,16 @@
 APRIORI DXE {
   INF MdeModulePkg/Core/Dxe/DxeMain.inf
   INF MdeModulePkg/Universal/PCD/Dxe/Pcd.inf
-  INF courbetPkg/Drivers/MarkDxe/MarkDxe01.inf
 
   INF Binaries/surya/QcomPkg/Drivers/EnvDxe/EnvDxe.inf
 
   INF MdeModulePkg/Universal/ReportStatusCodeRouter/RuntimeDxe/ReportStatusCodeRouterRuntimeDxe.inf
   INF MdeModulePkg/Universal/StatusCodeHandler/RuntimeDxe/StatusCodeHandlerRuntimeDxe.inf
   INF MdeModulePkg/Core/RuntimeDxe/RuntimeDxe.inf
-  INF courbetPkg/Drivers/MarkDxe/MarkDxe02.inf
-  INF RuleOverride = CPUDXE ArmPkg/Drivers/CpuDxe/CpuDxe.inf
-  INF courbetPkg/Drivers/FaultDxe/FaultDxe.inf
+  INF ArmPkg/Drivers/CpuDxe/CpuDxe.inf
   INF ArmPkg/Drivers/ArmGicDxe/ArmGicDxe.inf
   INF EmbeddedPkg/MetronomeDxe/MetronomeDxe.inf
   INF ArmPkg/Drivers/TimerDxe/TimerDxe.inf
-  INF courbetPkg/Drivers/StallDxe/StallDxe01.inf
 
   INF Binaries/surya/QcomPkg/Drivers/SmemDxe/SmemDxe.inf
   INF Binaries/surya/QcomPkg/Drivers/DALSYSDxe/DALSYSDxe.inf
@@ -25,24 +21,20 @@ APRIORI DXE {
   INF Binaries/surya/QcomPkg/Drivers/ULogDxe/ULogDxe.inf
   INF Binaries/surya/QcomPkg/Drivers/CmdDbDxe/CmdDbDxe.inf
   INF Binaries/surya/QcomPkg/Drivers/NpaDxe/NpaDxe.inf
-  INF courbetPkg/Drivers/StallDxe/StallDxe02.inf
   INF Binaries/surya/QcomPkg/Drivers/RpmhDxe/RpmhDxe.inf
   INF Binaries/surya/QcomPkg/Drivers/PdcDxe/PdcDxe.inf
   INF Binaries/surya/QcomPkg/Drivers/ClockDxe/ClockDxe.inf
   INF Binaries/surya/QcomPkg/Drivers/ShmBridgeDxe/ShmBridgeDxeLA.inf
   INF Binaries/surya/QcomPkg/Drivers/TzDxe/ScmDxeLA.inf
-  INF courbetPkg/Drivers/StallDxe/StallDxe03.inf
 
   INF MdeModulePkg/Universal/Disk/DiskIoDxe/DiskIoDxe.inf
   INF MdeModulePkg/Universal/Disk/PartitionDxe/PartitionDxe.inf
   INF MdeModulePkg/Universal/Disk/UnicodeCollation/EnglishDxe/EnglishDxe.inf
-  INF courbetPkg/Drivers/StallDxe/StallDxe04.inf
 
   INF Binaries/surya/QcomPkg/Drivers/SdccDxe/SdccDxe.inf
   INF Binaries/surya/QcomPkg/Drivers/UFSDxe/UFSDxe.inf
 
   INF FatPkg/EnhancedFatDxe/Fat.inf
-  INF courbetPkg/Drivers/StallDxe/StallDxe05.inf
 
   INF Binaries/surya/QcomPkg/Drivers/TzDxe/TzDxeLA.inf
 
@@ -50,7 +42,6 @@ APRIORI DXE {
 
   INF Binaries/surya/QcomPkg/Drivers/TLMMDxe/TLMMDxe.inf
   INF Binaries/surya/QcomPkg/Drivers/SPMIDxe/SPMIDxe.inf
-  INF courbetPkg/Drivers/StallDxe/StallDxe06.inf
 
   INF MdeModulePkg/Universal/ResetSystemRuntimeDxe/ResetSystemRuntimeDxe.inf
 
@@ -60,13 +51,11 @@ APRIORI DXE {
   INF MdeModulePkg/Universal/SecurityStubDxe/SecurityStubDxe.inf
   INF EmbeddedPkg/EmbeddedMonotonicCounter/EmbeddedMonotonicCounter.inf
   INF EmbeddedPkg/RealTimeClockRuntimeDxe/RealTimeClockRuntimeDxe.inf
-  INF courbetPkg/Drivers/StallDxe/StallDxe07.inf
   INF MdeModulePkg/Universal/PrintDxe/PrintDxe.inf
   INF MdeModulePkg/Universal/DevicePathDxe/DevicePathDxe.inf
   INF MdeModulePkg/Universal/CapsuleRuntimeDxe/CapsuleRuntimeDxe.inf
   INF MdeModulePkg/Universal/HiiDatabaseDxe/HiiDatabaseDxe.inf
   INF MdeModulePkg/Universal/BdsDxe/BdsDxe.inf
-  INF courbetPkg/Drivers/StallDxe/StallDxe08.inf
 
   INF Binaries/surya/QcomPkg/Drivers/GpiDxe/GpiDxe.inf
   INF Binaries/surya/QcomPkg/Drivers/I2CDxe/I2CDxe.inf
@@ -74,7 +63,6 @@ APRIORI DXE {
   INF Binaries/surya/QcomPkg/Drivers/UsbPwrCtrlDxe/UsbPwrCtrlDxe.inf
   INF Binaries/surya/QcomPkg/Drivers/QcomChargerDxe/QcomChargerDxeLA.inf
   INF Binaries/surya/QcomPkg/Drivers/ChargerExDxe/ChargerExDxe.inf
-  INF courbetPkg/Drivers/StallDxe/StallDxe09.inf
   INF Binaries/surya/QcomPkg/Drivers/UsbfnDwc3Dxe/UsbfnDwc3Dxe.inf
 
   INF MdeModulePkg/Bus/Usb/UsbBusDxe/UsbBusDxe.inf
@@ -84,7 +72,6 @@ APRIORI DXE {
   INF Binaries/surya/QcomPkg/Drivers/UsbMsdDxe/UsbMsdDxe.inf
   INF Binaries/surya/QcomPkg/Drivers/UsbDeviceDxe/UsbDeviceDxe.inf
   INF Binaries/surya/QcomPkg/Drivers/UsbConfigDxe/UsbConfigDxe.inf
-  INF courbetPkg/Drivers/StallDxe/StallDxe10.inf
   INF Binaries/surya/QcomPkg/Drivers/ButtonsDxe/ButtonsDxe.inf
   INF Binaries/surya/QcomPkg/Drivers/TsensDxe/TsensDxe.inf
 
@@ -105,5 +92,4 @@ APRIORI DXE {
   INF MdeModulePkg/Universal/Console/ConPlatformDxe/ConPlatformDxe.inf
   INF MdeModulePkg/Universal/Console/ConSplitterDxe/ConSplitterDxe.inf
   INF MdeModulePkg/Universal/Console/GraphicsConsoleDxe/GraphicsConsoleDxe.inf
-  INF courbetPkg/Drivers/MarkDxe/MarkDxe03.inf
 }
