@@ -82,4 +82,4 @@
   #
   # ACPI Tables
   #
-  #courbet/AcpiTables.inf
+  courbetPkg/AcpiTables.inf
